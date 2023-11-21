@@ -17,23 +17,6 @@ export class App extends Component {
     error: false,
   };
 
-  async componentDidMount() {
-    try {
-      this.setState({ isLoading: true, error: false });
-
-      const initialImages = await fetchImages(
-        this.state.query,
-        this.state.page
-      );
-      this.setState({
-        images: initialImages,
-      });
-    } catch (err) {
-      this.setState({ error: true });
-    } finally {
-      this.setState({ isLoading: false });
-    }
-  }
 
   async componentDidUpdate(prevProps, prevState) {
     if (
@@ -50,7 +33,8 @@ export class App extends Component {
           toast.error('No more images available');
         } else {
           this.setState(prevState => ({
-            images: [...prevState.images, ...newImages],
+            images: [...prevState.images, ...newImages.hits],
+            loadMore: this.state.page < Math.ceil(newImages.totalHits /12)
           }));
         }
       } catch (err) {
@@ -61,7 +45,9 @@ export class App extends Component {
     }
   }
 
-  onSubmitClick = searchedQuery => {
+
+   onSubmitClick = searchedQuery => {
+if(!searchedQuery.trim()) return
     this.setState({
       query: `${Date.now()}/${searchedQuery}`,
       page: 1,
