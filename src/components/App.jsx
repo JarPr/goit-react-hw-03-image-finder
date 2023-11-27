@@ -15,6 +15,7 @@ export class App extends Component {
     page: 1,
     isLoading: false,
     error: false,
+    loadMore: false,
   };
 
 
@@ -64,7 +65,7 @@ if(!searchedQuery.trim()) return
   };
 
   render() {
-    const { images, isLoading, error } = this.state;
+    const { images, isLoading, error, loadMore } = this.state;
 
     return (
       <Container>
@@ -72,7 +73,7 @@ if(!searchedQuery.trim()) return
         {error && <ErrorText />}
         {images.length > 0 && <ImageGallery images={images} />}
         {isLoading && <Loader />}
-        {images.length > 0 && (
+        {loadMore && !isLoading && images.length > 0 && (
           <Button loadMoreBtnClick={this.onLoadMoreClick} />
         )}
         <GlobalStyle />
